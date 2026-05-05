@@ -11,6 +11,7 @@ import time
 
 import cv2
 from fastapi import FastAPI, File, HTTPException, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
 from PIL import Image
 
 
@@ -25,7 +26,7 @@ from src.schema import (
     MatricesResponse,
     WaterClassificationResponse,
     CleanImageResponse,
-    CleanVideoResponse,
+    #CleanVideoResponse,
 )
 
 
@@ -33,6 +34,14 @@ from src.schema import (
 
 app = FastAPI()
 model = load_model(ONNX_MODEL_PATH)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/", response_model=HealthResponse)
