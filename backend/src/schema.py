@@ -1,3 +1,4 @@
+from typing import Optional
 from pydantic import BaseModel
 
 
@@ -7,16 +8,16 @@ class HealthResponse(BaseModel):
 
 class MatricesResponse(BaseModel):
     TIME: float
-    PSNR: float
-    SSIM: float
+    UIQM: float
+    UCIQE: float
+    PSNR: Optional[float] = None
+    SSIM: Optional[float] = None
 
 
 class WaterClassificationResponse(BaseModel):
-    class_: str
-    confidence: float
+    wtype: str
+    score: float
 
-    class Config:
-        fields = {"class_": "class"}
 
 
 class CleanImageResponse(BaseModel):

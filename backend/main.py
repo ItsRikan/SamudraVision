@@ -3,6 +3,7 @@ import io
 import json
 import os
 import tempfile
+from typing import Optional
 import urllib.error
 import urllib.request
 from pathlib import Path
@@ -15,7 +16,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from PIL import Image
 
 
-from src.pipeline.image_cleaner import clean_image
+from src.pipeline.image_cleaner import clean_image as clean_image_pipeline
 from src.static_data import MODEL_PATH,ONNX_MODEL_PATH
 from src.utils.utils import load_model
 from src.imagekit_conf import imagekit
@@ -50,8 +51,8 @@ def health_check():
 
 # Matrices
 @app.post("/matrices", response_model=MatricesResponse)
-async def compute_matrices(raw:UploadFile=File(...), referance:UploadFile=File(...)):
-    return await calculate_metrices(raw,referance,model)
+async def compute_matrices(raw: UploadFile = File(...), referance: Optional[UploadFile] = File(None)):
+    return await calculate_metrices(raw, referance, model)
 
 
 # Water classifier
@@ -87,13 +88,13 @@ async def clean_image(file:UploadFile=File):
         temp_path = str(Path(temp_file.name))
     try:
         t_start = time.perf_counter()
-        cleaned_image = clean_image(temp_path,model)
+        cleaned_image = clean_image_pipeline(temp_path,model)
         del_t = time.perf_counter() - t_start
         cv2.imwrite(save_path,cleaned_image)
         with open(save_path,"rb") as f:
             upload_response = imagekit.files.upload(
                 file = f,
-                file_name = os.path.join("AquaLense",save_path)
+                file_name = os.path.join("SamudraVision",save_path)
             )
         return {
             "status":"successful",
@@ -103,4 +104,6 @@ async def clean_image(file:UploadFile=File):
     finally:
         if os.path.exists(temp_path):
             os.remove(temp_path)
+        if os.path.exists(save_path):
+            os.remove(save_path)
 

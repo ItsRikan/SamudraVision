@@ -12,12 +12,12 @@ def classify_water(img_path):
     max_color = 255
     if b_mean > g_mean * 1.2:
         confidence = b_mean / max_color
-        return {"class": "Deep Blue Ocean", "score": confidence}
+        return {"wtype": "Deep Blue Ocean", "score": float(confidence.item())}
     elif g_mean > r_mean * 1.1:
         confidence = g_mean / max_color
-        return {"class": "Coastal/Turbid", "score": confidence}
+        return {"wtype": "Coastal/Turbid", "score": float(confidence.item())}
     else:
         b_g_ratio = b_mean / max_color if g_mean > 0 else 0
         g_r_ratio = g_mean / max_color if r_mean > 0 else 0
-        confidence = max(b_g_ratio, g_r_ratio, 1.0)  
-        return {"class": "Mixed/Shallow", "score": confidence}
+        confidence = np.max([b_g_ratio, g_r_ratio, 1.0])  
+        return {"wtype": "Mixed/Shallow", "score": float(confidence.item())}
