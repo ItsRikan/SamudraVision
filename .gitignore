@@ -1,0 +1,29 @@
+# Model files - exclude ONNX files but keep LSUImodel.pth
+backend/model/model.onnx
+backend/model/model.onnx.data
+
+# Environment
+.venv/
+env/
+venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
